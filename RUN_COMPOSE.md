@@ -1,14 +1,14 @@
-# RUN_COMPOSE.md – Hướng dẫn chạy Lab 05
+# RUN_COMPOSE.md – Hướng dẫn chạy Lab 05 cho Core Business API
 
-Tài liệu này hướng dẫn người khác clone repo sạch và chạy lại stack Compose của Lab 05.
+Tài liệu này hướng dẫn người khác clone repo sạch và chạy lại stack Compose của Lab 05 cho **Core Business API**.
 
 ---
 
-## 1. Clone repo
+## 1. Clone repo
 
 ```bash
 git clone <repo-url>
-cd FIT4110_lab05_docker_compose_readiness
+cd lab05-DangQuocKhanh1714
 ```
 
 ---

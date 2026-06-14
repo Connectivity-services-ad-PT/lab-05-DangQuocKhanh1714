@@ -1,0 +1,472 @@
+{
+  "info": {
+    "name": "Core Business API Tests - Lab04",
+    "description": "Postman Collection for Core Business API Docker Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01_Functional",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response has status field\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property(\"status\");",
+                  "});",
+                  "pm.test(\"Status is healthy\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.status).to.equal(\"healthy\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Access - Valid Card (ALLOW)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"CARD_001\",\n  \"gateId\": \"GATE_A01\",\n  \"timestamp\": \"2026-06-03T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/access/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["access", "check"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Decision is ALLOW\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.decision).to.equal(\"ALLOW\");",
+                  "});",
+                  "pm.test(\"Response has policyId\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property(\"policyId\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Policy By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/policies/access/POL_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["policies", "access", "POL_001"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response has policyId\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property(\"policyId\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Decision By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/decisions/DEC_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["decisions", "DEC_001"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response has decisionId\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property(\"decisionId\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02_Auth",
+      "item": [
+        {
+          "name": "Missing Token - Should return 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 or 403\", function () {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid Token - Should return 401",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid-token-123",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 or 403\", function () {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03_Negative",
+      "item": [
+        {
+          "name": "Missing cardId - Should return 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gateId\": \"GATE_A01\",\n  \"timestamp\": \"2026-06-03T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/access/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["access", "check"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "  pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test(\"Response has ProblemDetails format\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property(\"type\");",
+                  "  pm.expect(json).to.have.property(\"title\");",
+                  "  pm.expect(json).to.have.property(\"status\", 422);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid cardId format - Should return 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"\",\n  \"gateId\": \"GATE_A01\",\n  \"timestamp\": \"2026-06-03T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/access/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["access", "check"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "  pm.response.to.have.status(422);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Policy Not Found - Should return 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/policies/access/INVALID_POLICY",
+              "host": ["{{baseUrl}}"],
+              "path": ["policies", "access", "INVALID_POLICY"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04_Boundary_Reliability",
+      "item": [
+        {
+          "name": "Long cardId - Test boundary (51 chars should fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardId\": \"CARD_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n  \"gateId\": \"GATE_A01\",\n  \"timestamp\": \"2026-06-03T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/access/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["access", "check"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422 for boundary violation\", function () {",
+                  "  pm.response.to.have.status(422);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05_Consumer_side_Smoke",
+      "item": [
+        {
+          "name": "Call AI Vision Mock - Smoke Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageRef\": \"test-frame-001.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{aiVisionMockUrl}}/detect",
+              "host": ["{{aiVisionMockUrl}}"],
+              "path": ["detect"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06_Local_only_NonFunctional",
+      "item": [
+        {
+          "name": "Response Time Under 500ms - Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"env\") === \"local\") {",
+                  "  pm.test(\"Response time is below 500ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "  });",
+                  "} else {",
+                  "  pm.test(\"Latency test skipped on mock\", function () {",
+                  "    pm.expect(true).to.be.true;",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "authToken",
+      "value": "test-token"
+    },
+    {
+      "key": "aiVisionMockUrl",
+      "value": "http://localhost:4011"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: AI Vision Service API
+  version: 1.0.0
+  description: Mock AI Vision for Smart Campus
+servers:
+  - url: http://localhost:4010
+    description: Prism mock server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /detect:
+    post:
+      summary: Detect objects
+      operationId: detectObjects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageRef:
+                  type: string
+      responses:
+        '200':
+          description: Detection result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detectionId:
+                    type: string
+                  label:
+                    type: string
+                  confidence:
+                    type: number

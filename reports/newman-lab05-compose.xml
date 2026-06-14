@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Core Business API Tests - Lab04" tests="12" time="0.344">
+  <testsuite name="01_Functional / Health Check" id="b6be5b23-b9d2-4a95-b047-4f32b6393970" timestamp="2026-06-14T14:33:28.618Z" tests="3" failures="0" errors="0" time="0.045">
+    <testcase name="Status code is 200" time="0.045" classname="01FunctionalHealthCheck"/>
+    <testcase name="Response has status field" time="0.045" classname="01FunctionalHealthCheck"/>
+    <testcase name="Status is healthy" time="0.045" classname="01FunctionalHealthCheck"/>
+  </testsuite>
+  <testsuite name="01_Functional / Check Access - Valid Card (ALLOW)" id="d80c66aa-be26-497b-b973-48bba3d5f0d3" timestamp="2026-06-14T14:33:28.618Z" tests="3" failures="0" errors="0" time="0.039">
+    <testcase name="Status code is 200" time="0.039" classname="01FunctionalCheckAccessValidCardAllow"/>
+    <testcase name="Decision is ALLOW" time="0.039" classname="01FunctionalCheckAccessValidCardAllow"/>
+    <testcase name="Response has policyId" time="0.039" classname="01FunctionalCheckAccessValidCardAllow"/>
+  </testsuite>
+  <testsuite name="01_Functional / Get Policy By ID" id="abb63110-898f-4d1f-a8ed-b116b16ef7e4" timestamp="2026-06-14T14:33:28.618Z" tests="2" failures="2" errors="0" time="0.033">
+    <testcase name="Status code is 200" time="0.033" classname="01FunctionalGetPolicyById">
+      <failure type="AssertionFailure" message="expected response to have status code 200 but got 404">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 01_Functional / Get Policy By ID.]]>
+        <![CDATA[Test description: Status code is 200.]]>
+        <![CDATA[Error message: expected response to have status code 200 but got 404.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 200 but got 404
+   at Object.eval sandbox-script.js:1:3).]]>
+      </failure>
+    </testcase>
+    <testcase name="Response has policyId" time="0.033" classname="01FunctionalGetPolicyById">
+      <failure type="AssertionFailure" message="expected { …(4) } to have property 'policyId'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 01_Functional / Get Policy By ID.]]>
+        <![CDATA[Test description: Response has policyId.]]>
+        <![CDATA[Error message: expected { …(4) } to have property 'policyId'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected { …(4) } to have property 'policyId'
+   at Object.eval sandbox-script.js:2:3).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="01_Functional / Get Decision By ID" id="1c70796c-9e4d-4fce-81aa-d89590a34f95" timestamp="2026-06-14T14:33:28.618Z" tests="2" failures="2" errors="0" time="0.007">
+    <testcase name="Status code is 200" time="0.007" classname="01FunctionalGetDecisionById">
+      <failure type="AssertionFailure" message="expected response to have status code 200 but got 404">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 01_Functional / Get Decision By ID.]]>
+        <![CDATA[Test description: Status code is 200.]]>
+        <![CDATA[Error message: expected response to have status code 200 but got 404.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 200 but got 404
+   at Object.eval sandbox-script.js:1:4).]]>
+      </failure>
+    </testcase>
+    <testcase name="Response has decisionId" time="0.007" classname="01FunctionalGetDecisionById">
+      <failure type="AssertionFailure" message="expected { …(4) } to have property 'decisionId'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 01_Functional / Get Decision By ID.]]>
+        <![CDATA[Test description: Response has decisionId.]]>
+        <![CDATA[Error message: expected { …(4) } to have property 'decisionId'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected { …(4) } to have property 'decisionId'
+   at Object.eval sandbox-script.js:2:4).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="02_Auth / Missing Token - Should return 401" id="8c655bae-42b6-4638-9555-8f3796670ee6" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="1" errors="0" time="0.004">
+    <testcase name="Status code is 401 or 403" time="0.004" classname="02AuthMissingTokenShouldReturn401">
+      <failure type="AssertionFailure" message="expected [ 401, 403 ] to include 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 02_Auth / Missing Token - Should return 401.]]>
+        <![CDATA[Test description: Status code is 401 or 403.]]>
+        <![CDATA[Error message: expected [ 401, 403 ] to include 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected [ 401, 403 ] to include 200
+   at Object.eval sandbox-script.js:1:5).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="02_Auth / Invalid Token - Should return 401" id="93997049-dc14-43ee-8756-4a2a4ca6e971" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="1" errors="0" time="0.007">
+    <testcase name="Status code is 401 or 403" time="0.007" classname="02AuthInvalidTokenShouldReturn401">
+      <failure type="AssertionFailure" message="expected [ 401, 403 ] to include 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 85817c31-d92b-4b70-9e90-7104c9c94c9d.]]>
+        <![CDATA[Collection name: Core Business API Tests - Lab04.]]>
+        <![CDATA[Request name: 02_Auth / Invalid Token - Should return 401.]]>
+        <![CDATA[Test description: Status code is 401 or 403.]]>
+        <![CDATA[Error message: expected [ 401, 403 ] to include 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected [ 401, 403 ] to include 200
+   at Object.eval sandbox-script.js:1:6).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="03_Negative / Missing cardId - Should return 422" id="a186a5e1-5c62-49d9-8721-323320fe6e3d" timestamp="2026-06-14T14:33:28.618Z" tests="2" failures="0" errors="0" time="0.004">
+    <testcase name="Status code is 422" time="0.004" classname="03NegativeMissingCardIdShouldReturn422"/>
+    <testcase name="Response has ProblemDetails format" time="0.004" classname="03NegativeMissingCardIdShouldReturn422"/>
+  </testsuite>
+  <testsuite name="03_Negative / Invalid cardId format - Should return 422" id="6b6413d6-658a-46a9-a969-de4e215afaa0" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="0" errors="0" time="0.007">
+    <testcase name="Status code is 422" time="0.007" classname="03NegativeInvalidCardIdFormatShouldReturn422"/>
+  </testsuite>
+  <testsuite name="03_Negative / Policy Not Found - Should return 404" id="0bdaeac6-cbab-467d-9c8d-c3b721920335" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="0" errors="0" time="0.005">
+    <testcase name="Status code is 404" time="0.005" classname="03NegativePolicyNotFoundShouldReturn404"/>
+  </testsuite>
+  <testsuite name="04_Boundary_Reliability / Long cardId - Test boundary (51 chars should fail)" id="ada00663-d87f-4f6d-af0e-93bf931b55d9" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="Status code is 422 for boundary violation" time="0.003" classname="04BoundaryReliabilityLongCardIdTestBoundary51CharsShouldFail"/>
+  </testsuite>
+  <testsuite name="05_Consumer_side_Smoke / Call AI Vision Mock - Smoke Test" id="e740d2e4-b2d5-4bf4-9898-dd76208af296" timestamp="2026-06-14T14:33:28.618Z" tests="0" failures="0" errors="0" time="0.176"/>
+  <testsuite name="06_Local_only_NonFunctional / Response Time Under 500ms - Health Check" id="f3c14d75-0f61-4cd0-bf53-eb1cdf0dfb72" timestamp="2026-06-14T14:33:28.618Z" tests="1" failures="0" errors="0" time="0.014">
+    <testcase name="Response time is below 500ms" time="0.014" classname="06LocalOnlyNonFunctionalResponseTimeUnder500MsHealthCheck"/>
+  </testsuite>
+</testsuites>

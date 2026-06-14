@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  # Core Business API (Node.js/Express)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fit4110-core-api-lab05
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      ai-vision:
+        condition: service_healthy
+    networks:
+      - team-internal
+      - class-net
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # PostgreSQL database cho Core Business
+  db:
+    image: postgres:15-alpine
+    container_name: fit4110-core-db-lab05
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-core_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-core_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-core_business}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - team-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-core_user} -d ${POSTGRES_DB:-core_business}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # AI Vision service (mock bằng Prism)
+  ai-vision:
+    image: stoplight/prism:latest
+    container_name: fit4110-core-ai-vision-lab05
+    command: mock -h 0.0.0.0 /contracts/ai-vision.openapi.yaml
+    volumes:
+      - ./contracts:/contracts
+    networks:
+      - team-internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4010/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  team-internal:
+    driver: bridge
+  class-net:
+    external: true
+    name: class-net
+
+volumes:
+  postgres_data:

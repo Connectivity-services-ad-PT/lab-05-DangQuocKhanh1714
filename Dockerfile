@@ -1,54 +1,35 @@
-# syntax=docker/dockerfile:1.7
+FROM node:20-alpine
 
-FROM python:3.11-slim AS builder
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
-# Không ghi bytecode và hiển thị stdout ngay lập tức
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-WORKDIR /build
-
-# Tạo virtualenv riêng để giảm layer image
-RUN python -m venv /opt/venv
-
-COPY requirements.txt .
-
-RUN /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
-
-
-FROM python:3.11-slim AS runtime
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Biến runtime mặc định – có thể override qua .env
-ENV APP_HOST=0.0.0.0
-ENV APP_PORT=8000
-ENV AUTH_TOKEN=local-dev-token
-ENV SERVICE_NAME=iot-ingestion
-ENV SERVICE_VERSION=0.5.0
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
 
 WORKDIR /app
 
-# Tạo user non‑root để chạy app an toàn
-RUN addgroup --system appgroup \
-    && adduser --system --ingroup appgroup --home /app appuser
+# Copy package files
+COPY package*.json ./
 
-COPY --from=builder /opt/venv /opt/venv
-COPY src/ ./src/
+# Install dependencies
+RUN npm ci --only=production
 
-# Cấp quyền cho user
-RUN chown -R appuser:appgroup /app
+# Copy source code
+COPY server.js .
+COPY contracts/ ./contracts/
+COPY scripts/ ./scripts/
 
-USER appuser
+# Chown cho non-root user
+RUN chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
 
 EXPOSE 8000
 
-# Healthcheck sử dụng endpoint /health của API
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).read()" || exit 1
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
 
-# Chạy API bằng uvicorn
-CMD ["sh", "-c", "uvicorn iot_app.main:app --app-dir src --host ${APP_HOST} --port ${APP_PORT}"]
+CMD ["node", "server.js"]

@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Core Business API - Smart Campus
+  version: 0.5.0
+  description: Policy engine for access control decisions
+
+servers:
+  - url: http://localhost:8000
+    description: Local development
+  - url: http://api:8000
+    description: Docker Compose internal
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  service:
+                    type: string
+                  db:
+                    type: string
+
+  /access/check:
+    post:
+      summary: Check access decision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cardId
+              properties:
+                cardId:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                gateId:
+                  type: string
+                timestamp:
+                  type: string
+                  format: date-time
+                idempotencyKey:
+                  type: string
+      responses:
+        '200':
+          description: Decision made
+        '422':
+          description: Validation error
+
+  /policies/access/{policyId}:
+    get:
+      summary: Get policy by ID
+      parameters:
+        - name: policyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Policy details
+        '404':
+          description: Policy not found
+
+  /decisions/{decisionId}:
+    get:
+      summary: Get decision by ID
+      parameters:
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Decision details
+        '404':
+          description: Decision not found
